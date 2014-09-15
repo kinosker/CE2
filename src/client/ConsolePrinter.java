@@ -58,8 +58,8 @@ public class ConsolePrinter {
 	}
 
 	public void printList(ListIterator<String> _iterator) {
-		final int initialCount = 1;
-		int count = initialCount;
+		final int INITIAL_COUNT = 1;
+		int count = INITIAL_COUNT;
 		while (_iterator.hasNext()) {
 			System.out.println(count + ". " + _iterator.next());
 			count++;
