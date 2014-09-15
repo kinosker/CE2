@@ -1,6 +1,8 @@
 package command;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Scanner;
 
@@ -60,6 +62,8 @@ public class CommandHandler {
 		final String CLEAR_COMMAND = "clear";
 		final String EXIT_COMMAND = "exit";
 		final String DELETE_COMMAND = "delete";
+		final String SORT_COMMAND = "sort";
+		final String SEARCH_COMMAND = "search";
 
 		switch (userInput.toLowerCase()) {
 		case ADD_COMMAND:
@@ -70,6 +74,10 @@ public class CommandHandler {
 			return new ClearTask();
 		case DELETE_COMMAND:
 			return new DeleteTask();
+		case SORT_COMMAND:
+			return new SortTask();
+		case SEARCH_COMMAND:
+			return new searchTask();
 		case EXIT_COMMAND:
 			return new ExitTask();
 		default:
@@ -144,7 +152,7 @@ class DeleteTask implements Command {
 	public Feedback execute() {
 		final int ARRAY_OFFSET = -1;
 		int lineToDelete = extractInt() + ARRAY_OFFSET;
-		if (lineToDelete <= CommandHandler.toDoList.size() && lineToDelete >= 0) {
+		if (lineToDelete < CommandHandler.toDoList.size() && lineToDelete >= 0) {
 			String deletedInput = CommandHandler.toDoList.remove(lineToDelete);
 			CommandHandler._consolePrinter.printDeleteSuccesful(deletedInput);
 		} else {
@@ -176,11 +184,66 @@ class ExitTask implements Command {
 
 /**
  * @author TienLong This class makes use of the Command interface to implement
+ *         execute function for SortTask
+ */
+class SortTask implements Command {
+	public Feedback execute() 
+	{
+		Collections.sort(CommandHandler.toDoList, alphabeticalSort);
+		return Feedback.CONTINUE;
+	}
+	
+	private static Comparator<String> alphabeticalSort = new Comparator<String>() {
+	    public int compare(String firstString, String secondString) {
+	        int result = String.CASE_INSENSITIVE_ORDER.compare(firstString, secondString);
+	        if (result == 0) {
+	            result = firstString.compareTo(secondString);
+	        }
+	        return result;
+	    }
+	};
+
+}
+
+/**
+ * @author TienLong This class makes use of the Command interface to implement
+ *         execute function for searchTask
+ */
+class searchTask implements Command {
+	public Feedback execute() {
+		
+		
+		String searchInput = CommandHandler._consoleScanner.nextLine();
+		searchInput = searchInput.trim();
+		
+		ArrayList <String> searchList = new ArrayList<String>(); 
+		int index = 0;
+        for (String string : CommandHandler.toDoList) {
+        	index++;
+            if(string.matches("^.*(?i)("+searchInput+").*")){
+                searchList.add(index +". " + string);
+            }
+        }
+     System.out.println(searchList);
+		return Feedback.CONTINUE;
+	}
+}
+
+/**
+ * @author TienLong This class makes use of the Command interface to implement
  *         execute function for InvalidTask
  */
 class InvalidTask implements Command {
 	public Feedback execute() {
+		clearUserInput();
 		CommandHandler._consolePrinter.printInvalid();
 		return Feedback.CONTINUE;
+	}
+
+	private void clearUserInput() {
+		if (CommandHandler._consoleScanner.hasNextLine())
+		{
+			CommandHandler._consoleScanner.nextLine();
+		}
 	}
 }
