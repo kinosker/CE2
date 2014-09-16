@@ -16,21 +16,90 @@ public class TestingCE2 {
     Scanner scanner = new Scanner(System.in);
     ArrayList<String> storedList = new ArrayList<String>();
     ArrayList<String> expectedList = new ArrayList<String>();
+
     @Test
     public void test() {
-        
+
         testAddTask();
         testSearchTask();
         testSortTask();
         testClearTask();
+        testDeleteTask();
     }
 
-    
+    private void testDeleteTask() {
+        testDeleteAllTask();
+        testDelete2ndTask();
+        testDeleteBlank();
+        testDeleteMultiple();
+
+    }
+
+    private void testDeleteMultiple() {
+        clearLists();
+        storedList.add("pig");
+        storedList.add("shall");
+        storedList.add("not");
+        storedList.add("kill");
+        storedList.add("me");
+        storedList.add("and");
+        storedList.add("you");
+        
+        expectedList = cloneList(storedList);
+        expectedList.remove("not");
+        expectedList.remove("me");
+        expectedList.remove("and");
+
+        setInputStream("delete 3 \n delete 4 \n delete 4");
+        executeCommandTest();
+        
+    }
+
+    private void testDeleteBlank() {
+        clearLists();
+        storedList.add("pig");
+        storedList.add("eat");
+        storedList.add("me");
+        storedList.add("NOT NOW!!!");
+        expectedList = cloneList(storedList);
+
+        setInputStream("delete ");
+        executeCommandTest();
+    }
+
+    private void testDelete2ndTask() {
+        clearLists();
+        storedList.add("pig");
+        storedList.add("eat");
+        storedList.add("me");
+        storedList.add("NOT NOW!!!");
+        
+        expectedList = cloneList(storedList);
+        expectedList.remove("eat");
+        setInputStream("delete 2");
+        executeCommandTest();
+        
+    }
+
+    private void testDeleteAllTask() {
+        clearLists();
+        storedList.add("pig");
+        setInputStream("delete 1");
+        executeCommandTest();
+        
+    }
+
+    public static ArrayList<String> cloneList(ArrayList<String> list) {
+        ArrayList<String> clone = new ArrayList<String>(list.size());
+        for (String item : list)
+            clone.add(item);
+        return clone;
+    }
+
     private void testClearTask() {
         testClear1Task();
         testClearMultipleTasks();
     }
-
 
     private void testClearMultipleTasks() {
         clearLists();
@@ -44,7 +113,6 @@ public class TestingCE2 {
         executeCommandTest();
     }
 
-
     private void testClear1Task() {
         clearLists();
         storedList.add("pig");
@@ -52,9 +120,8 @@ public class TestingCE2 {
         executeCommandTest();
     }
 
-
     private void testSearchTask() {
-        SearchEngine _searchEngine = new SearchEngine();     
+        SearchEngine _searchEngine = new SearchEngine();
         testSearchEmptyList(_searchEngine);
         testSearchNotFound(_searchEngine);
         testSearchNull(_searchEngine);
@@ -64,7 +131,7 @@ public class TestingCE2 {
         testSearchSpaceNoList(_searchEngine);
         testSearchFoundAlot(_searchEngine);
     }
-   
+
     private void testSearchFoundAlot(SearchEngine _searchEngine) {
         clearLists();
         storedList.add("pig");
@@ -78,8 +145,7 @@ public class TestingCE2 {
         storedList.add("I              pig");
         storedList.add("feedMe");
         storedList.add("findMeIamTheHidDeNPig");
-        
-        
+
         expectedList.add("1. pig");
         expectedList.add("4. I am Piggy");
         expectedList.add("5. Is he a pig, i dont know?");
@@ -87,13 +153,15 @@ public class TestingCE2 {
         expectedList.add("8. @pIg@");
         expectedList.add("9. I              pig");
         expectedList.add("11. findMeIamTheHidDeNPig");
-        
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, "pig"));
+
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
     private void testSearchSpaceNoList(SearchEngine _searchEngine) {
         clearLists();
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " "));
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, " "));
     }
 
     private void testSearchSpaceNotFound(SearchEngine _searchEngine) {
@@ -101,7 +169,8 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " "));
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, " "));
     }
 
     private void testSearchEmptyString(SearchEngine _searchEngine) {
@@ -109,7 +178,8 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, ""));
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, ""));
     }
 
     private void testSearchNull(SearchEngine _searchEngine) {
@@ -117,8 +187,9 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, null));
-        
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, null));
+
     }
 
     private void testSearch1Found(SearchEngine _searchEngine) {
@@ -127,40 +198,37 @@ public class TestingCE2 {
         storedList.add("bat");
         storedList.add("bird");
         expectedList.add("3. bird");
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " bird"));
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, " bird"));
     }
 
-    private void testSearchEmptyList(SearchEngine _searchEngine)
-    {
+    private void testSearchEmptyList(SearchEngine _searchEngine) {
         clearLists();
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(null, ""));
+        assertEquals(expectedList, _searchEngine.searchCaseSensitive(null, ""));
     }
-    
-    private void testSearchNotFound(SearchEngine _searchEngine)
-    {
+
+    private void testSearchNotFound(SearchEngine _searchEngine) {
         clearLists();
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, "pig"));
+        assertEquals(expectedList,
+                _searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
-    private void testAddTask()
-    {
+    private void testAddTask() {
         testAddSingle();
-        testAddMultiple();   
+        testAddMultiple();
         testAddWhiteSpace();
         testAddWhiteSpaces();
     }
-    
-
 
     private void testAddWhiteSpace() {
         clearLists();
         setInputStream("add ");
         executeCommandTest();
     }
-    
+
     private void testAddWhiteSpaces() {
         clearLists();
         setInputStream("add           ");
@@ -186,11 +254,8 @@ public class TestingCE2 {
         expectedList.clear();
         storedList.clear();
     }
-    
-    
 
-    private void testSortTask()
-    {
+    private void testSortTask() {
         testSortNoList();
         testSort1Task();
         testSort2Task();
@@ -210,7 +275,7 @@ public class TestingCE2 {
         storedList.add("bannaaaaanaaaaa");
         storedList.add("piG");
         storedList.add("Apple for u?");
-        
+
         expectedList.add("Apple for u?");
         expectedList.add("bannaaaaanaaaaa");
         expectedList.add("Food for PiG");
@@ -225,7 +290,6 @@ public class TestingCE2 {
         executeCommandTest();
     }
 
-
     private void testSortCaseSensitive() {
         clearLists();
         storedList.add("pig");
@@ -238,9 +302,8 @@ public class TestingCE2 {
         expectedList.add("pig");
         setInputStream("sort");
         executeCommandTest();
-        
-    }
 
+    }
 
     private void testSort2Task() {
         clearLists();
@@ -252,7 +315,6 @@ public class TestingCE2 {
         executeCommandTest();
     }
 
-
     private void testSort1Task() {
         clearLists();
         storedList.add("bat");
@@ -261,24 +323,21 @@ public class TestingCE2 {
         executeCommandTest();
     }
 
-
     private void testSortNoList() {
         clearLists();
         setInputStream("sort");
         executeCommandTest();
     }
 
-
     private void executeCommandTest() {
-        CommandHandler commandHandler = new CommandHandler(new ConsolePrinter(), scanner, storedList);
-        while(scanner.hasNext())
-        commandHandler.executeCommand(scanner.next());
+        CommandHandler commandHandler = new CommandHandler(
+                new ConsolePrinter(), scanner, storedList);
+        while (scanner.hasNext())
+            commandHandler.executeCommand(scanner.next());
         assertEquals(expectedList, commandHandler.getList());
     }
-    
-    
-    private void setInputStream(String userInput) 
-    {
+
+    private void setInputStream(String userInput) {
         ByteArrayInputStream in = new ByteArrayInputStream(userInput.getBytes());
         System.setIn(in);
         scanner = new Scanner(System.in);
