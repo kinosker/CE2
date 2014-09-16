@@ -35,11 +35,11 @@ public class TxtLogger implements Logger {
 	@Override
 	public void logContent(BufferedWriter writer, ArrayList<String> toDoList) {
 		// TODO Auto-generated method stub
-		ListIterator<String> _iterator = toDoList.listIterator();
+		ListIterator<String> iterator = toDoList.listIterator();
 
 		try {
-			while (_iterator.hasNext()) {
-				writer.write(_iterator.next());
+			while (iterator.hasNext()) {
+				writer.write(iterator.next());
 				writer.newLine();
 			}
 

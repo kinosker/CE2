@@ -16,8 +16,8 @@ public class TextBuddy {
         CONTINUE, EXIT
     };
 
-    private static ConsolePrinter _consolePrinter = new ConsolePrinter();
-    private static Scanner _consoleScanner = new Scanner(System.in);
+    private static ConsolePrinter consolePrinter = new ConsolePrinter();
+    private static Scanner consoleScanner = new Scanner(System.in);
     private static final int EXIT_INVALID_DATA = 13;
     private static final int EXIT_SUCCESS = 0;
 
@@ -31,14 +31,14 @@ public class TextBuddy {
         }
 
         String fileName = args[0];
-        FileHandler _fileHandler = new FileHandler(_consolePrinter,
-                _consoleScanner, fileName);
+        FileHandler fileHandler = new FileHandler(consolePrinter,
+                consoleScanner, fileName);
 
-        _fileHandler.buildFile(toDoList);
-        _consolePrinter.setConfirmedFileName(_fileHandler.getFileName());
-        _consolePrinter.printWelcome();
+        fileHandler.buildFile(toDoList);
+        consolePrinter.setConfirmedFileName(fileHandler.getFileName());
+        consolePrinter.printWelcome();
         
-        executeTextBuddy(toDoList, _fileHandler);
+        executeTextBuddy(toDoList, fileHandler);
 
     }
 
@@ -47,16 +47,16 @@ public class TextBuddy {
      * 
      */
     private static void executeTextBuddy(ArrayList<String> toDoList,
-            FileHandler _fileHandler) {
-        Feedback _feedback;
+            FileHandler fileHandler) {
+        Feedback feedback;
         do {
-            CommandHandler _commandHandler = new CommandHandler(
-                    _consolePrinter, _consoleScanner, toDoList);
+            CommandHandler commandHandler = new CommandHandler(
+                    consolePrinter, consoleScanner, toDoList);
             String userInput = getUserInput();
-            _feedback = _commandHandler.executeCommand(userInput);
-        } while (_feedback != Feedback.EXIT);
+            feedback = commandHandler.executeCommand(userInput);
+        } while (feedback != Feedback.EXIT);
 
-        exitTextBuddy(toDoList, _fileHandler);
+        exitTextBuddy(toDoList, fileHandler);
     }
 
     /**
@@ -66,7 +66,7 @@ public class TextBuddy {
      *            the exit code
      */
     private static void invalidArgumentExit() {
-        _consolePrinter.printNoArgs();
+        consolePrinter.printNoArgs();
         System.exit(EXIT_INVALID_DATA);
     }
 
@@ -77,14 +77,14 @@ public class TextBuddy {
      *            the exit code
      * @param toDoList
      *            the list that store the to do task
-     * @param _fileHandler
+     * @param fileHandler
      *            the handler for the file
      */
     private static void exitTextBuddy(ArrayList<String> toDoList,
-            FileHandler _fileHandler) {
-        _fileHandler.logFile(toDoList);
-        _consoleScanner.close();
-        _fileHandler.close();
+            FileHandler fileHandler) {
+        fileHandler.logFile(toDoList);
+        consoleScanner.close();
+        fileHandler.close();
         System.exit(EXIT_SUCCESS);
     }
 
@@ -103,8 +103,8 @@ public class TextBuddy {
      * @return String the string that contains the user input
      */
     private static String getUserInput() {
-        _consolePrinter.printGetCommand();
-        String userInput = _consoleScanner.next();
+        consolePrinter.printGetCommand();
+        String userInput = consoleScanner.next();
         return userInput;
     }
 

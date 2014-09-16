@@ -15,24 +15,24 @@ import client.TextBuddy.Feedback;
 public class CommandHandler {
 
     static ArrayList<String> toDoList = null;
-    static Scanner _consoleScanner; // default modifier for package and class
+    static Scanner consoleScanner; // default modifier for package and class
                                     // usage
-    static ConsolePrinter _consolePrinter;
+    static ConsolePrinter consolePrinter;
 
     /**
      * Constructor for CommandHandler
      * 
-     * @param _consolePrinter
+     * @param consolePrinter
      *            for printing output in console
-     * @param _consoleScanner
+     * @param consoleScanner
      *            for scanning input in console
      * @param toDoList
      *            the list that store the task
      */
-    public CommandHandler(ConsolePrinter _consolePrinter,
-            Scanner _consoleScanner, ArrayList<String> toDoList) {
-        CommandHandler._consolePrinter = _consolePrinter;
-        CommandHandler._consoleScanner = _consoleScanner;
+    public CommandHandler(ConsolePrinter consolePrinter,
+            Scanner consoleScanner, ArrayList<String> toDoList) {
+        CommandHandler.consolePrinter = consolePrinter;
+        CommandHandler.consoleScanner = consoleScanner;
         CommandHandler.toDoList = toDoList;
     }
 
@@ -44,8 +44,8 @@ public class CommandHandler {
      * @return Feedback to continue or exit textBuddy
      */
     public Feedback executeCommand(String userInput) {
-        Command _command = determineCommand(userInput);
-        return _command.execute();
+        Command command = determineCommand(userInput);
+        return command.execute();
     }
 
     public ArrayList<String> getList() {
@@ -110,13 +110,13 @@ interface Command {
  */
 class AddCommand implements Command {
     public Feedback execute() {
-        String taskDescription = CommandHandler._consoleScanner.nextLine();
+        String taskDescription = CommandHandler.consoleScanner.nextLine();
         taskDescription = taskDescription.trim();
         if (canAdd(taskDescription)) {
             CommandHandler.toDoList.add(taskDescription);
-            CommandHandler._consolePrinter.printAddSuccess(taskDescription);
+            CommandHandler.consolePrinter.printAddSuccess(taskDescription);
         } else {
-            CommandHandler._consolePrinter.printInvalid();
+            CommandHandler.consolePrinter.printInvalid();
         }
         return Feedback.CONTINUE;
     }
@@ -133,7 +133,7 @@ class AddCommand implements Command {
 class ClearCommand implements Command {
     public Feedback execute() {
         CommandHandler.toDoList.clear();
-        CommandHandler._consolePrinter.printClear();
+        CommandHandler.consolePrinter.printClear();
         return Feedback.CONTINUE;
     }
 }
@@ -145,11 +145,11 @@ class ClearCommand implements Command {
 class DisplayCommand implements Command {
     public Feedback execute() {
         if (CommandHandler.toDoList.isEmpty()) {
-            CommandHandler._consolePrinter.printEmptyList();
+            CommandHandler.consolePrinter.printEmptyList();
         } else {
 
             final boolean PRINT_INDEX = true;
-            CommandHandler._consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
+            CommandHandler.consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
         }
         return Feedback.CONTINUE;
     }
@@ -160,15 +160,17 @@ class DisplayCommand implements Command {
  *         execute function for DeleteTask
  */
 class DeleteCommand implements Command {
+    
+    final int INVALID_INDEX = -1;
     public Feedback execute() {
         final int ARRAY_OFFSET = -1;
-        int lineToDelete = extractInt() + ARRAY_OFFSET;
+        int lineToDelete = getLineIndex() + ARRAY_OFFSET;
         if (canDelete(lineToDelete)) {
             String deletedInput = CommandHandler.toDoList.remove(lineToDelete);
-            CommandHandler._consolePrinter.printDeleteSuccess(deletedInput);
+            CommandHandler.consolePrinter.printDeleteSuccess(deletedInput);
 
         } else {
-            CommandHandler._consolePrinter.printDeleteFail();
+            CommandHandler.consolePrinter.printDeleteFail();
 
         }
         return Feedback.CONTINUE;
@@ -179,14 +181,36 @@ class DeleteCommand implements Command {
                 && lineToDelete >= 0;
     }
 
-    private int extractInt() {
-        while (!CommandHandler._consoleScanner.hasNextInt()) {
-            System.out.println("Kindly select a number to delete");
-            CommandHandler._consoleScanner.nextLine();
+    private int getLineIndex() {
+        
+       
+        String userInput = CommandHandler.consoleScanner.nextLine();
+        if(isValidString(userInput))
+        {
+            userInput = userInput.trim();
+            if(isInteger(userInput))
+            {
+                return Integer.parseInt(userInput);
+            }
         }
-        int intInput = CommandHandler._consoleScanner.nextInt();
-        CommandHandler._consoleScanner.nextLine();
-        return intInput;
+        return INVALID_INDEX;
+    }
+    
+    private boolean isInteger(String userInput) {
+        
+        try
+        {
+            Integer.parseInt(userInput);
+            return true;
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
+    }
+
+    private boolean isValidString(String addedInput) {
+        return addedInput.length() > 0;
     }
 }
 
@@ -208,8 +232,8 @@ class SortCommand implements Command {
     public Feedback execute() {
         Collections.sort(CommandHandler.toDoList, alphabeticalSort);
         final boolean PRINT_INDEX = true;
-        CommandHandler._consolePrinter.printSortSuccess();
-        CommandHandler._consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
+        CommandHandler.consolePrinter.printSortSuccess();
+        CommandHandler.consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
         return Feedback.CONTINUE;
     }
 
@@ -232,20 +256,20 @@ class SortCommand implements Command {
  */
 class SearchCommand implements Command {
     public Feedback execute() {
-        SearchEngine _searchEngine = new SearchEngine();
+        SearchEngine searchEngine = new SearchEngine();
         String searchInput = getUserInput();
-        ArrayList<String> searchList  = _searchEngine.searchCaseInsensitive(CommandHandler.toDoList, searchInput);
+        ArrayList<String> searchList  = searchEngine.searchCaseSensitive(CommandHandler.toDoList, searchInput);
         if (searchList.isEmpty()) 
         {
             System.out.println("No result found");
         } else {
-            CommandHandler._consolePrinter.printList(searchList);
+            CommandHandler.consolePrinter.printList(searchList);
         }
         return Feedback.CONTINUE;
     }
 
     private String getUserInput() {
-        return CommandHandler._consoleScanner.nextLine();
+        return CommandHandler.consoleScanner.nextLine();
     }
 
 
@@ -258,13 +282,13 @@ class SearchCommand implements Command {
 class InvalidCommand implements Command {
     public Feedback execute() {
         clearUserInput();
-        CommandHandler._consolePrinter.printInvalid();
+        CommandHandler.consolePrinter.printInvalid();
         return Feedback.CONTINUE;
     }
 
     private void clearUserInput() {
-        if (CommandHandler._consoleScanner.hasNextLine()) {
-            CommandHandler._consoleScanner.nextLine();
+        if (CommandHandler.consoleScanner.hasNextLine()) {
+            CommandHandler.consoleScanner.nextLine();
         }
     }
 }

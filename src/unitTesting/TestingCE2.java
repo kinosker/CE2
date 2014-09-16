@@ -121,18 +121,18 @@ public class TestingCE2 {
     }
 
     private void testSearchTask() {
-        SearchEngine _searchEngine = new SearchEngine();
-        testSearchEmptyList(_searchEngine);
-        testSearchNotFound(_searchEngine);
-        testSearchNull(_searchEngine);
-        testSearchEmptyString(_searchEngine);
-        testSearchSpaceNotFound(_searchEngine);
-        testSearch1Found(_searchEngine);
-        testSearchSpaceNoList(_searchEngine);
-        testSearchFoundAlot(_searchEngine);
+        SearchEngine searchEngine = new SearchEngine();
+        testSearchEmptyList(searchEngine);
+        testSearchNotFound(searchEngine);
+        testSearchNull(searchEngine);
+        testSearchEmptyString(searchEngine);
+        testSearchSpaceNotFound(searchEngine);
+        testSearch1Found(searchEngine);
+        testSearchSpaceNoList(searchEngine);
+        testSearchFoundAlot(searchEngine);
     }
 
-    private void testSearchFoundAlot(SearchEngine _searchEngine) {
+    private void testSearchFoundAlot(SearchEngine searchEngine) {
         clearLists();
         storedList.add("pig");
         storedList.add("bat");
@@ -155,65 +155,65 @@ public class TestingCE2 {
         expectedList.add("11. findMeIamTheHidDeNPig");
 
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, "pig"));
+                searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
-    private void testSearchSpaceNoList(SearchEngine _searchEngine) {
+    private void testSearchSpaceNoList(SearchEngine searchEngine) {
         clearLists();
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, " "));
+                searchEngine.searchCaseSensitive(storedList, " "));
     }
 
-    private void testSearchSpaceNotFound(SearchEngine _searchEngine) {
-        clearLists();
-        storedList.add("horse");
-        storedList.add("bat");
-        storedList.add("bird");
-        assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, " "));
-    }
-
-    private void testSearchEmptyString(SearchEngine _searchEngine) {
+    private void testSearchSpaceNotFound(SearchEngine searchEngine) {
         clearLists();
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, ""));
+                searchEngine.searchCaseSensitive(storedList, " "));
     }
 
-    private void testSearchNull(SearchEngine _searchEngine) {
+    private void testSearchEmptyString(SearchEngine searchEngine) {
         clearLists();
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, null));
+                searchEngine.searchCaseSensitive(storedList, ""));
+    }
+
+    private void testSearchNull(SearchEngine searchEngine) {
+        clearLists();
+        storedList.add("horse");
+        storedList.add("bat");
+        storedList.add("bird");
+        assertEquals(expectedList,
+                searchEngine.searchCaseSensitive(storedList, null));
 
     }
 
-    private void testSearch1Found(SearchEngine _searchEngine) {
+    private void testSearch1Found(SearchEngine searchEngine) {
         clearLists();
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
         expectedList.add("3. bird");
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, " bird"));
+                searchEngine.searchCaseSensitive(storedList, " bird"));
     }
 
-    private void testSearchEmptyList(SearchEngine _searchEngine) {
+    private void testSearchEmptyList(SearchEngine searchEngine) {
         clearLists();
-        assertEquals(expectedList, _searchEngine.searchCaseSensitive(null, ""));
+        assertEquals(expectedList, searchEngine.searchCaseSensitive(null, ""));
     }
 
-    private void testSearchNotFound(SearchEngine _searchEngine) {
+    private void testSearchNotFound(SearchEngine searchEngine) {
         clearLists();
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
         assertEquals(expectedList,
-                _searchEngine.searchCaseSensitive(storedList, "pig"));
+                searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
     private void testAddTask() {

@@ -16,15 +16,15 @@ import client.ConsolePrinter;
 public class FileHandler {
 
 	enum FileCommandType {
-		APPEND, OVERWRITE, RENAME, INVALID
+		FILE_APPEND, FILE_OVERWRITE, FILE_RENAME, FILE_INVALID
 	};
 
-	private Logger _logger = null;
+	private Logger logger = null;
 	private BufferedWriter writer = null;
 	private String fileName;
-	private FileCommandType _fileCommand;
-	Scanner _consoleScanner;
-	ConsolePrinter _consolePrinter;
+	private FileCommandType fileCommand;
+	Scanner consoleScanner;
+	ConsolePrinter consolePrinter;
 
 	/*
 	 * Store selected fileName and select default logger ( TxtLogger ) that the
@@ -34,37 +34,37 @@ public class FileHandler {
 	 * Constructor for FileHandler, with TxtLogger selected as the default
 	 * logger
 	 * 
-	 * @param _consolePrinter
+	 * @param consolePrinter
 	 *            for printing output in console
-	 * @param _consoleScanner
+	 * @param consoleScanner
 	 *            for scanning input in console
 	 * @param fileName
 	 *            the fileName that will be manipulate
 	 */
-	public FileHandler(ConsolePrinter _consolePrinter, Scanner _consoleScanner,
+	public FileHandler(ConsolePrinter consolePrinter, Scanner consoleScanner,
 			String fileName) {
-		this._consolePrinter = _consolePrinter;
-		this._consoleScanner = _consoleScanner;
+		this.consolePrinter = consolePrinter;
+		this.consoleScanner = consoleScanner;
 		this.fileName = fileName;
-		this._logger = new TxtLogger();
+		this.logger = new TxtLogger();
 	}
 
 	/**
 	 * Constructor for FileHandler
 	 * 
-	 * @param _consoleScanner
+	 * @param consoleScanner
 	 *            for scanning input in console
 	 * @param fileName
 	 *            the fileName that will be manipulate
-	 * @param _logger
+	 * @param logger
 	 *            the logger which decides how the output should be logged
 	 */
-	public FileHandler(ConsolePrinter _consolePrinter, Scanner _consoleScanner,
-			String fileName, Logger _logger) {
-		this._consolePrinter = _consolePrinter;
-		this._consoleScanner = _consoleScanner;
+	public FileHandler(ConsolePrinter consolePrinter, Scanner consoleScanner,
+			String fileName, Logger logger) {
+		this.consolePrinter = consolePrinter;
+		this.consoleScanner = consoleScanner;
 		this.fileName = fileName;
-		this._logger = _logger;
+		this.logger = logger;
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class FileHandler {
 	 *            the list that store the tasks to do
 	 */
 	public void logFile(ArrayList<String> toDoList) {
-		_logger.logContent(writer, toDoList);
+		logger.logContent(writer, toDoList);
 	}
 
 	/**
@@ -115,8 +115,8 @@ public class FileHandler {
 	 *            the list to store the task to do
 	 */
 	private void storeExistingFileData(ArrayList<String> toDoList) {
-		Parser _parser = new Parser(toDoList);
-		_parser.readContent(fileName);
+		Parser parser = new Parser(toDoList);
+		parser.readContent(fileName);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class FileHandler {
 	 * @return FileCommandType the command that will decide the file operation
 	 */
 	private boolean appendFile() {
-		return _fileCommand == FileCommandType.APPEND;
+		return fileCommand == FileCommandType.FILE_APPEND;
 	}
 
 	/**
@@ -166,8 +166,8 @@ public class FileHandler {
 	 * @return boolean the condition if the file exist
 	 */
 	private boolean fileExist() {
-		File _file = new File(fileName);
-		return _file.exists();
+		File file = new File(fileName);
+		return file.exists();
 	}
 
 	/**
@@ -179,20 +179,20 @@ public class FileHandler {
 		String userInput;
 
 		do {
-			_consolePrinter.printFileExist(fileName);
-			userInput = _consoleScanner.nextLine();
-			_fileCommand = determineFileCommand(userInput);
-			switch (_fileCommand) {
-			case APPEND:
+			consolePrinter.printFileExist(fileName);
+			userInput = consoleScanner.nextLine();
+			fileCommand = determineFileCommand(userInput);
+			switch (fileCommand) {
+			case FILE_APPEND:
 				break;
-			case OVERWRITE:
+			case FILE_OVERWRITE:
 				break;
-			case RENAME:
+			case FILE_RENAME:
 				getNewFileName();
-				invalidInput = checkNewFileName();
+				invalidInput = fileExist();
 				break;
-			case INVALID:
-				_consolePrinter.printInvalid();
+			case FILE_INVALID:
+				consolePrinter.printInvalid();
 				break;
 			}
 		} while (invalidInput);
@@ -213,31 +213,21 @@ public class FileHandler {
 
 		switch (userInput.toLowerCase()) {
 		case APPEND_FILE:
-			return FileCommandType.APPEND;
+			return FileCommandType.FILE_APPEND;
 		case OVERWRITE_FILE:
-			return FileCommandType.OVERWRITE;
+			return FileCommandType.FILE_OVERWRITE;
 		case RENAME_FILE:
-			return FileCommandType.RENAME;
+			return FileCommandType.FILE_RENAME;
 		default:
-			return FileCommandType.INVALID;
+			return FileCommandType.FILE_INVALID;
 
 		}
 
-	}
-
-	private boolean checkNewFileName() {
-		boolean invalidInput;
-		if (fileExist()) {
-			invalidInput = true;
-		} else {
-			invalidInput = false;
-		}
-		return invalidInput;
 	}
 
 	private void getNewFileName() {
-		_consolePrinter.printPromptFileName();
-		fileName = _consoleScanner.nextLine();
+		consolePrinter.printPromptFileName();
+		fileName = consoleScanner.nextLine();
 	}
 
 }

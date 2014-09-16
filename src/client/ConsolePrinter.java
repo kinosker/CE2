@@ -26,8 +26,8 @@ public class ConsolePrinter {
         System.out.print("Kindly enter the new file name : ");
     }
 
-    public void printWelcome(String fileName) {
-        System.out.println("Welcome to TextBuddy. " + fileName
+    public void printWelcome() {
+        System.out.println("Welcome to TextBuddy. " + confirmedFileName
                 + " is ready for use");
     }
 
@@ -64,9 +64,9 @@ public class ConsolePrinter {
         if (addIndex) {
             final int INITIAL_COUNT = 1;
             int count = INITIAL_COUNT;
-            ListIterator<String> _iterator = list.listIterator();
-            while (_iterator.hasNext()) {
-                System.out.println(count + ". " + _iterator.next());
+            ListIterator<String> iterator = list.listIterator();
+            while (iterator.hasNext()) {
+                System.out.println(count + ". " + iterator.next());
                 count++;
             }
         }
@@ -77,9 +77,9 @@ public class ConsolePrinter {
     }
 
     public void printList(ArrayList<String> list) {
-        ListIterator<String> _iterator = list.listIterator();
-        while (_iterator.hasNext()) {
-            System.out.println(_iterator.next());
+        ListIterator<String> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
         }
     }
 
