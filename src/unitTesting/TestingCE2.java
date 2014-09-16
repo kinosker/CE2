@@ -13,37 +13,70 @@ import client.ConsolePrinter;
 
 public class TestingCE2 {
     Scanner scanner = new Scanner(System.in);
-    ArrayList<String> inputList = new ArrayList<String>();
+    ArrayList<String> storedList = new ArrayList<String>();
     ArrayList<String> expectedList = new ArrayList<String>();
     @Test
     public void test() {
         
-        
         testAddTask();
-        
+        testSearchTask();
+    }
+
+    private void testSearchTask() {
+        testSearchEmptyList();
+      //  testSearchNotFound();
+    }
+   
+    private void testSearchEmptyList()
+    {
+        clearLists();
+        setInputStream("search pig");
+        executeCommandTest();
+    }
+    
+    private void testSearchNotFound()
+    {
+        clearLists();
+        storedList.add("horse");
+        storedList.add("bat");
+        storedList.add("bird");
+        setInputStream("search pig");
+        executeCommandTest();
     }
 
     private void testAddTask()
     {
-        testSingleAdd();
-        testMultipleAdd();   
-        testAddBlank();
+        testAddSingle();
+        testAddMultiple();   
+        testAddWhiteSpace();
+        testAddWhiteSpaces();
+    }
+    
+    private void testAddClass()
+    {
+        
     }
 
-    private void testAddBlank() {
+    private void testAddWhiteSpace() {
         clearLists();
         setInputStream("add ");
         executeCommandTest();
     }
+    
+    private void testAddWhiteSpaces() {
+        clearLists();
+        setInputStream("add           ");
+        executeCommandTest();
+    }
 
-    private void testSingleAdd() {
+    private void testAddSingle() {
         clearLists();
         setInputStream("add abc");
         expectedList.add("abc");
         executeCommandTest();
     }
 
-    private void testMultipleAdd() {
+    private void testAddMultiple() {
         clearLists();
         setInputStream("add abc\n add xyz");
         expectedList.add("abc");
@@ -53,11 +86,11 @@ public class TestingCE2 {
 
     private void clearLists() {
         expectedList.clear();
-        inputList.clear();
+        storedList.clear();
     }
 
     private void executeCommandTest() {
-        CommandHandler commandHandler = new CommandHandler(new ConsolePrinter(), scanner, inputList);
+        CommandHandler commandHandler = new CommandHandler(new ConsolePrinter(), scanner, storedList);
         while(scanner.hasNext())
         commandHandler.executeCommand(scanner.next());
         assertEquals(expectedList, commandHandler.getList());

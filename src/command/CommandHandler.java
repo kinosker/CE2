@@ -3,7 +3,6 @@ package command;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ListIterator;
 import java.util.Scanner;
 
 import client.ConsolePrinter;
@@ -48,11 +47,10 @@ public class CommandHandler {
         Command _command = determineCommand(userInput);
         return _command.execute();
     }
-    
-    public ArrayList<String> getList()
-    {
+
+    public ArrayList<String> getList() {
         return CommandHandler.toDoList;
-        
+
     }
 
     /**
@@ -73,21 +71,21 @@ public class CommandHandler {
 
         switch (userInput.toLowerCase()) {
         case ADD_COMMAND:
-            return new AddTask();
+            return new AddCommand();
         case DISPLAY_COMMAND:
-            return new DisplayTask();
+            return new DisplayCommand();
         case CLEAR_COMMAND:
-            return new ClearTask();
+            return new ClearCommand();
         case DELETE_COMMAND:
-            return new DeleteTask();
+            return new DeleteCommand();
         case SORT_COMMAND:
-            return new SortTask();
+            return new SortCommand();
         case SEARCH_COMMAND:
-            return new searchTask();
+            return new SearchCommand();
         case EXIT_COMMAND:
-            return new ExitTask();
+            return new ExitCommand();
         default:
-            return new InvalidTask();
+            return new InvalidCommand();
         }
     }
 
@@ -110,13 +108,21 @@ interface Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for AddTask
  */
-class AddTask implements Command {
+class AddCommand implements Command {
     public Feedback execute() {
-        String addedInput = CommandHandler._consoleScanner.nextLine();
-        addedInput = addedInput.trim();
-        CommandHandler.toDoList.add(addedInput);
-        CommandHandler._consolePrinter.printAddSuccessful(addedInput);
+        String taskDescription = CommandHandler._consoleScanner.nextLine();
+        taskDescription = taskDescription.trim();
+        if (canAdd(taskDescription)) {
+            CommandHandler.toDoList.add(taskDescription);
+            CommandHandler._consolePrinter.printAddSuccess(taskDescription);
+        } else {
+            CommandHandler._consolePrinter.printInvalid();
+        }
         return Feedback.CONTINUE;
+    }
+
+    private boolean canAdd(String addedInput) {
+        return addedInput.length() > 0;
     }
 }
 
@@ -124,7 +130,7 @@ class AddTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for ClearTask
  */
-class ClearTask implements Command {
+class ClearCommand implements Command {
     public Feedback execute() {
         CommandHandler.toDoList.clear();
         CommandHandler._consolePrinter.printClear();
@@ -136,15 +142,14 @@ class ClearTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for DisplayTask
  */
-class DisplayTask implements Command {
+class DisplayCommand implements Command {
     public Feedback execute() {
         if (CommandHandler.toDoList.isEmpty()) {
             CommandHandler._consolePrinter.printEmptyList();
         } else {
 
-            ListIterator<String> _iterator = CommandHandler.toDoList
-                    .listIterator();
-            CommandHandler._consolePrinter.printList(_iterator);
+            final boolean PRINT_INDEX = true;
+            CommandHandler._consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
         }
         return Feedback.CONTINUE;
     }
@@ -154,17 +159,24 @@ class DisplayTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for DeleteTask
  */
-class DeleteTask implements Command {
+class DeleteCommand implements Command {
     public Feedback execute() {
         final int ARRAY_OFFSET = -1;
         int lineToDelete = extractInt() + ARRAY_OFFSET;
-        if (lineToDelete < CommandHandler.toDoList.size() && lineToDelete >= 0) {
+        if (canDelete(lineToDelete)) {
             String deletedInput = CommandHandler.toDoList.remove(lineToDelete);
-            CommandHandler._consolePrinter.printDeleteSuccesful(deletedInput);
+            CommandHandler._consolePrinter.printDeleteSuccess(deletedInput);
+
         } else {
-            CommandHandler._consolePrinter.printIndexOutofBound();
+            CommandHandler._consolePrinter.printDeleteFail();
+
         }
         return Feedback.CONTINUE;
+    }
+
+    private boolean canDelete(int lineToDelete) {
+        return lineToDelete < CommandHandler.toDoList.size()
+                && lineToDelete >= 0;
     }
 
     private int extractInt() {
@@ -182,7 +194,7 @@ class DeleteTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for ExitTask
  */
-class ExitTask implements Command {
+class ExitCommand implements Command {
     public Feedback execute() {
         return Feedback.EXIT;
     }
@@ -192,9 +204,12 @@ class ExitTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for SortTask
  */
-class SortTask implements Command {
+class SortCommand implements Command {
     public Feedback execute() {
         Collections.sort(CommandHandler.toDoList, alphabeticalSort);
+        final boolean PRINT_INDEX = true;
+        CommandHandler._consolePrinter.printSortSuccess();
+        CommandHandler._consolePrinter.printList(CommandHandler.toDoList, PRINT_INDEX);
         return Feedback.CONTINUE;
     }
 
@@ -215,7 +230,7 @@ class SortTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for searchTask
  */
-class searchTask implements Command {
+class SearchCommand implements Command {
     public Feedback execute() {
         final int INITIAL_INDEX = 1;
         ArrayList<String> searchList = new ArrayList<String>();
@@ -232,11 +247,8 @@ class searchTask implements Command {
         }
         if (searchList.isEmpty()) {
             System.out.println("No result found");
-        }
-        else
-        {     ListIterator<String> _iterator = searchList
-            .listIterator();
-            CommandHandler._consolePrinter.printList(_iterator);
+        } else {
+            CommandHandler._consolePrinter.printList(searchList);
         }
         return Feedback.CONTINUE;
     }
@@ -246,7 +258,7 @@ class searchTask implements Command {
  * @author TienLong This class makes use of the Command interface to implement
  *         execute function for InvalidTask
  */
-class InvalidTask implements Command {
+class InvalidCommand implements Command {
     public Feedback execute() {
         clearUserInput();
         CommandHandler._consolePrinter.printInvalid();
