@@ -232,26 +232,23 @@ class SortCommand implements Command {
  */
 class SearchCommand implements Command {
     public Feedback execute() {
-        final int INITIAL_INDEX = 1;
-        ArrayList<String> searchList = new ArrayList<String>();
-        int index = INITIAL_INDEX;
-        String searchInput = CommandHandler._consoleScanner.nextLine();
-        searchInput = searchInput.trim().toLowerCase();
-
-        for (String task : CommandHandler.toDoList) {
-
-            if (task.toLowerCase().contains(searchInput)) {
-                searchList.add(index + ". " + task);
-            }
-            index++;
-        }
-        if (searchList.isEmpty()) {
+        SearchEngine _searchEngine = new SearchEngine();
+        String searchInput = getUserInput();
+        ArrayList<String> searchList  = _searchEngine.searchCaseInsensitive(CommandHandler.toDoList, searchInput);
+        if (searchList.isEmpty()) 
+        {
             System.out.println("No result found");
         } else {
             CommandHandler._consolePrinter.printList(searchList);
         }
         return Feedback.CONTINUE;
     }
+
+    private String getUserInput() {
+        return CommandHandler._consoleScanner.nextLine();
+    }
+
+
 }
 
 /**
