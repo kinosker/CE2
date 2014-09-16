@@ -22,9 +22,37 @@ public class TestingCE2 {
         testAddTask();
         testSearchTask();
         testSortTask();
+        testClearTask();
     }
 
     
+    private void testClearTask() {
+        testClear1Task();
+        testClearMultipleTasks();
+    }
+
+
+    private void testClearMultipleTasks() {
+        clearLists();
+        storedList.add("pig");
+        storedList.add("eat");
+        storedList.add("me");
+        storedList.add("dont");
+        storedList.add("eat");
+        storedList.add("pig");
+        setInputStream("clear");
+        executeCommandTest();
+    }
+
+
+    private void testClear1Task() {
+        clearLists();
+        storedList.add("pig");
+        setInputStream("clear");
+        executeCommandTest();
+    }
+
+
     private void testSearchTask() {
         SearchEngine _searchEngine = new SearchEngine();     
         testSearchEmptyList(_searchEngine);
@@ -60,12 +88,12 @@ public class TestingCE2 {
         expectedList.add("9. I              pig");
         expectedList.add("11. findMeIamTheHidDeNPig");
         
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, "pig"));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
     private void testSearchSpaceNoList(SearchEngine _searchEngine) {
         clearLists();
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, " "));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " "));
     }
 
     private void testSearchSpaceNotFound(SearchEngine _searchEngine) {
@@ -73,7 +101,7 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, " "));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " "));
     }
 
     private void testSearchEmptyString(SearchEngine _searchEngine) {
@@ -81,7 +109,7 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, ""));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, ""));
     }
 
     private void testSearchNull(SearchEngine _searchEngine) {
@@ -89,7 +117,7 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, null));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, null));
         
     }
 
@@ -99,13 +127,13 @@ public class TestingCE2 {
         storedList.add("bat");
         storedList.add("bird");
         expectedList.add("3. bird");
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, " bird"));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, " bird"));
     }
 
     private void testSearchEmptyList(SearchEngine _searchEngine)
     {
         clearLists();
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(null, ""));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(null, ""));
     }
     
     private void testSearchNotFound(SearchEngine _searchEngine)
@@ -114,7 +142,7 @@ public class TestingCE2 {
         storedList.add("horse");
         storedList.add("bat");
         storedList.add("bird");
-        assertEquals( expectedList , _searchEngine.searchCaseInsensitive(storedList, "pig"));
+        assertEquals( expectedList , _searchEngine.searchCaseSensitive(storedList, "pig"));
     }
 
     private void testAddTask()
@@ -165,15 +193,48 @@ public class TestingCE2 {
     {
         testSortNoList();
         testSort1Task();
-        testSortMultiTask();
-        testSortCaseInsensitive();
+        testSort2Task();
+        testSortCaseSensitive();
+        testSortMulitpleTask();
     }
 
-    private void testSortCaseInsensitive() {
+    private void testSortMulitpleTask() {
         clearLists();
         storedList.add("pig");
-        storedList.add("bat");
-        expectedList.add("bat");
+        storedList.add("Monkey");
+        storedList.add("PIG");
+        storedList.add("Food for PiG");
+        storedList.add("monkey");
+        storedList.add("PiG");
+        storedList.add("monkey");
+        storedList.add("bannaaaaanaaaaa");
+        storedList.add("piG");
+        storedList.add("Apple for u?");
+        
+        expectedList.add("Apple for u?");
+        expectedList.add("bannaaaaanaaaaa");
+        expectedList.add("Food for PiG");
+        expectedList.add("Monkey");
+        expectedList.add("monkey");
+        expectedList.add("monkey");
+        expectedList.add("PIG");
+        expectedList.add("PiG");
+        expectedList.add("piG");
+        expectedList.add("pig");
+        setInputStream("sort");
+        executeCommandTest();
+    }
+
+
+    private void testSortCaseSensitive() {
+        clearLists();
+        storedList.add("pig");
+        storedList.add("PIG");
+        storedList.add("PiG");
+        storedList.add("piG");
+        expectedList.add("PIG");
+        expectedList.add("PiG");
+        expectedList.add("piG");
         expectedList.add("pig");
         setInputStream("sort");
         executeCommandTest();
@@ -181,7 +242,7 @@ public class TestingCE2 {
     }
 
 
-    private void testSortMultiTask() {
+    private void testSort2Task() {
         clearLists();
         storedList.add("pig");
         storedList.add("bat");
