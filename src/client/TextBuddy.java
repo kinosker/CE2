@@ -13,7 +13,7 @@ import fileLogger.FileHandler;
 public class TextBuddy {
 
     public enum Feedback {
-        CONTINUE, EXIT
+        INVALID_TASK, CONTINUE, EXIT
     };
 
     private static ConsolePrinter consolePrinter = new ConsolePrinter();
@@ -51,9 +51,8 @@ public class TextBuddy {
         Feedback feedback;
         do {
             CommandHandler commandHandler = new CommandHandler(
-                    consolePrinter, consoleScanner, toDoList);
-            String userInput = getUserInput();
-            feedback = commandHandler.executeCommand(userInput);
+                    consolePrinter, toDoList);
+            feedback = commandHandler.executeCommand(getUserInput());
         } while (feedback != Feedback.EXIT);
 
         exitTextBuddy(toDoList, fileHandler);
@@ -104,7 +103,7 @@ public class TextBuddy {
      */
     private static String getUserInput() {
         consolePrinter.printGetCommand();
-        String userInput = consoleScanner.next();
+        String userInput = consoleScanner.nextLine();
         return userInput;
     }
 

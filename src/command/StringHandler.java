@@ -7,17 +7,26 @@ public class StringHandler {
      *            the string where the first word is to be extracted
      * @return the extracted first word or null if there is no first word
      */
-    public String getFirstWord(String source) {
-        if (source != null) {
-            source.trim();
-            if (!source.isEmpty()) {
-                if (source.contains(" ")) {
-                    String firstWord = source.substring(0, source.indexOf(" "));
-                    return firstWord;
-                }
-            }
+    public static String getFirstWord(String source) {
+        if (source == null) {
+            return null;
         }
-        return null;
+
+        source = source.trim();
+        
+        if (source.isEmpty())
+        {
+            return null;
+        }
+        
+        if (source.contains(" ")) {
+            String firstWord = source.substring(0, source.indexOf(" "));
+            return firstWord;
+        } 
+        else {
+            return source;
+        }
+
     }
 
     /**
@@ -31,9 +40,9 @@ public class StringHandler {
      *         toRemove word
      *         <p>
      */
-    public String removeFirstMatched(String source, String toRemove) {
+    public static String removeFirstMatched(String source, String toRemove) {
         if (source != null && toRemove != null) {
-            toRemove.trim();
+            toRemove = toRemove.trim();
             String newWord = source.replaceFirst(toRemove, "");
             return newWord.trim();
         }

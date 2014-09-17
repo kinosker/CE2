@@ -2,10 +2,7 @@ package unitTesting;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayInputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.junit.Test;
 
@@ -14,10 +11,9 @@ import command.SearchEngine;
 import client.ConsolePrinter;
 
 public class TestingCE2 {
-    Scanner scanner = new Scanner(System.in);
     ArrayList<String> storedList = new ArrayList<String>();
     ArrayList<String> expectedList = new ArrayList<String>();
-
+    CommandHandler commandHandler = new CommandHandler(new ConsolePrinter(), storedList);
     @Test
     public void test() {
 
@@ -53,8 +49,13 @@ public class TestingCE2 {
         expectedList.remove("me");
         expectedList.remove("and");
 
-        setInputStream("delete 3 \n delete 4 \n delete 4");
-        executeCommandTest();
+       commandHandler.executeCommand("delete 3");
+       commandHandler.executeCommand("delete 4");
+       commandHandler.executeCommand("delete 4");
+       
+        assertEquals(expectedList, commandHandler.getList());
+
+        
         
     }
 
@@ -66,8 +67,9 @@ public class TestingCE2 {
         storedList.add("NOT NOW!!!");
         expectedList = cloneList(storedList);
 
-        setInputStream("delete ");
-        executeCommandTest();
+        commandHandler.executeCommand("delete ");
+        assertEquals(expectedList, commandHandler.getList());
+
     }
 
     private void testDelete2ndTask() {
@@ -79,17 +81,15 @@ public class TestingCE2 {
         
         expectedList = cloneList(storedList);
         expectedList.remove("eat");
-        setInputStream("delete 2");
-        executeCommandTest();
-        
+        commandHandler.executeCommand("delete 2");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testDeleteAllTask() {
         clearLists();
         storedList.add("pig");
-        setInputStream("delete 1");
-        executeCommandTest();
-        
+        commandHandler.executeCommand("delete 1");
+        assertEquals(expectedList, commandHandler.getList());        
     }
 
     public static ArrayList<String> cloneList(ArrayList<String> list) {
@@ -112,15 +112,15 @@ public class TestingCE2 {
         storedList.add("dont");
         storedList.add("eat");
         storedList.add("pig");
-        setInputStream("clear");
-        executeCommandTest();
+        commandHandler.executeCommand("clear");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testClear1Task() {
         clearLists();
         storedList.add("pig");
-        setInputStream("clear");
-        executeCommandTest();
+        commandHandler.executeCommand("clear");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testSearchTask() {
@@ -228,29 +228,34 @@ public class TestingCE2 {
 
     private void testAddWhiteSpace() {
         clearLists();
-        setInputStream("add ");
-        executeCommandTest();
+        commandHandler.executeCommand("add ");
+        assertEquals(expectedList, commandHandler.getList());        
     }
 
     private void testAddWhiteSpaces() {
         clearLists();
-        setInputStream("add           ");
-        executeCommandTest();
+        commandHandler.executeCommand("add           ");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testAddSingle() {
         clearLists();
-        setInputStream("add abc");
         expectedList.add("abc");
-        executeCommandTest();
+        
+        commandHandler.executeCommand("add abc");
+        assertEquals(expectedList, commandHandler.getList());
+        
     }
 
     private void testAddMultiple() {
         clearLists();
-        setInputStream("add abc\n add xyz");
         expectedList.add("abc");
         expectedList.add("xyz");
-        executeCommandTest();
+        commandHandler.executeCommand("add abc");
+        commandHandler.executeCommand("add xyz");
+        assertEquals(expectedList, commandHandler.getList());
+
+        
     }
 
     private void clearLists() {
@@ -289,8 +294,8 @@ public class TestingCE2 {
         expectedList.add("PiG");
         expectedList.add("piG");
         expectedList.add("pig");
-        setInputStream("sort");
-        executeCommandTest();
+        commandHandler.executeCommand("sort");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testSortCaseSensitive() {
@@ -303,9 +308,8 @@ public class TestingCE2 {
         expectedList.add("PiG");
         expectedList.add("piG");
         expectedList.add("pig");
-        setInputStream("sort");
-        executeCommandTest();
-
+        commandHandler.executeCommand("sort");
+        assertEquals(expectedList, commandHandler.getList());
     }
 
     private void testSort2Task() {
@@ -314,35 +318,25 @@ public class TestingCE2 {
         storedList.add("bat");
         expectedList.add("bat");
         expectedList.add("pig");
-        setInputStream("sort");
-        executeCommandTest();
+        commandHandler.executeCommand("sort");
+        assertEquals(expectedList, commandHandler.getList());        
     }
 
     private void testSort1Task() {
         clearLists();
         storedList.add("bat");
         expectedList.add("bat");
-        setInputStream("sort");
-        executeCommandTest();
+        commandHandler.executeCommand("sort");
+        assertEquals(expectedList, commandHandler.getList());
+
     }
 
     private void testSortNoList() {
         clearLists();
-        setInputStream("sort");
-        executeCommandTest();
-    }
-
-    private void executeCommandTest() {
-        CommandHandler commandHandler = new CommandHandler(
-                new ConsolePrinter(), scanner, storedList);
-        while (scanner.hasNext())
-            commandHandler.executeCommand(scanner.next());
+        commandHandler.executeCommand("sort");
         assertEquals(expectedList, commandHandler.getList());
     }
-
-    private void setInputStream(String userInput) {
-        ByteArrayInputStream in = new ByteArrayInputStream(userInput.getBytes());
-        System.setIn(in);
-        scanner = new Scanner(System.in);
-    }
 }
+
+
+ 
