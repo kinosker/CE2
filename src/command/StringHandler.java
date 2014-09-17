@@ -33,8 +33,9 @@ public class StringHandler {
      */
     public String removeFirstMatched(String source, String toRemove) {
         if (source != null && toRemove != null) {
+            toRemove.trim();
             String newWord = source.replaceFirst(toRemove, "");
-            return newWord;
+            return newWord.trim();
         }
 
         return source;
