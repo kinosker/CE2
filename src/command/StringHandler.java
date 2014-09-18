@@ -23,7 +23,8 @@ public class StringHandler {
             String firstWord = source.substring(0, source.indexOf(" "));
             return firstWord;
         } 
-        else {
+        else 
+        {
             return source;
         }
 
